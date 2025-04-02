@@ -37,6 +37,41 @@ body {
 
 The YouTube Viewing Habits Survey has been conducted for the purpose of collecting ***categorical*** and ***numerical*** data. This data is used to investigate and gain insight into viewing habits of the authot on **YouTube**, specifically looking into the the type of YouTube videos that is most viewed and the activity done while watching. The data collected was used to produce the following graphs below.
 
+```{r}
+library(magick)
+
+# creating a loading gif
+frame_1 <- image_blank(width = 150,
+                      height = 50,
+                      color = "#FFFFFF") %>%
+    image_annotate(text = "loading.",
+                   color = "#6f6f6f",
+                   size = 30,
+                   gravity = "west")
+
+frame_2 <- image_blank(width = 150,
+                       height = 50,
+                       color = "#FFFFFF") %>%
+  image_annotate(text = "loading..",
+                 color = "#e89797",
+                 size = 30,
+                 gravity = "west")
+
+frame_3 <- image_blank(width = 150,
+                       height = 50,
+                       color = "#FFFFFF") %>%
+  image_annotate(text = "loading...",
+                 color = "#e89797",
+                 size = 30,
+                 gravity = "west")
+
+frames <- c(frame_1, frame_2, frame_3)
+
+# creating the gif
+image_animate(frames, fps = 2)
+
+```
+
 ```{r, fig.width=12}
 library(tidyverse)
 
