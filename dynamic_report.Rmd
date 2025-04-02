@@ -1,0 +1,136 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+h2 {
+  background-color: #D72525;
+  color: #FFFFFF;
+  padding: 20px;
+}
+
+h3 {
+  background-color: #D72525;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 20px;
+}
+
+body {
+  font-family: "Lexend";
+  font-size: 15pt;
+  padding: 20px;
+  text-align: justify;
+}
+```
+
+## Youtube Viewing Habits
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Logo_of_YouTube_%282015-2017%29.svg/1280px-Logo_of_YouTube_%282015-2017%29.svg.png){width=50%}
+
+The YouTube Viewing Habits Survey has been conducted for the purpose of collecting ***categorical*** and ***numerical*** data. This data is used to investigate and gain insight into viewing habits of the authot on **YouTube**, specifically looking into the the type of YouTube videos that is most viewed and the activity done while watching. The data collected was used to produce the following graphs below.
+
+```{r}
+library(magick)
+
+# creating a loading gif
+frame_1 <- image_blank(width = 150,
+                      height = 50,
+                      color = "#FFFFFF") %>%
+    image_annotate(text = "loading.",
+                   color = "#6f6f6f",
+                   size = 30,
+                   gravity = "west")
+
+frame_2 <- image_blank(width = 150,
+                       height = 50,
+                       color = "#FFFFFF") %>%
+  image_annotate(text = "loading..",
+                 color = "#e89797",
+                 size = 30,
+                 gravity = "west")
+
+frame_3 <- image_blank(width = 150,
+                       height = 50,
+                       color = "#FFFFFF") %>%
+  image_annotate(text = "loading...",
+                 color = "#e89797",
+                 size = 30,
+                 gravity = "west")
+
+frames <- c(frame_1, frame_2, frame_3)
+
+# creating the gif
+image_animate(frames, fps = 2)
+
+```
+
+```{r, fig.width=12}
+library(tidyverse)
+
+csv_file <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1Ecx8IHTYpLxm8Q6cjBBmZE88GHlN7t6pN_fgIJz63NhPu2sRb0w22Xk65La7-3cnj39iE2ggPEuL/pub?gid=1008665205&single=true&output=csv"
+
+logged_data <- read_csv(csv_file)
+
+latest_data <- logged_data %>%
+  rename(categories = 2,
+         video_length = 3,
+         engagement_level = 4,
+         multitasking = 5,
+         activity = 6)
+
+latest_data %>%
+  ggplot() +
+    geom_bar(aes(x = categories, 
+                fill = categories)) +
+    labs(title = "Which type of YouTube videos are watched the most?",
+         subtitle = "Examining the distribution of YouTube videos watched across different categories",
+         caption = "Source: Youtube Viewing Habits Survey",
+         x = "Video category",
+         y = "Number of videos")
+
+# need to display at least two bar charts + dynamic comments based on
+# at least two summary values
+# can use paste() or paste0() for dynamic comments, or use inline R code
+
+# amount of videos watched
+total_videos <- length(latest_data$video_length)
+# total amount of hours of youtube videos watched
+total_time <- ((sum(latest_data$video_length)) / 60) %>%
+  round(1)
+
+average_eng <- mean(latest_data$engagement_level) %>% round(1)
+
+```
+
+According to the survey, there are **`r total_videos`** videos in total that have been watched, giving a total watch time of **`r total_time`** hours.
+
+The average engagement level while watching YouTube videos is **`r average_eng`**, where where 1 is *not engaged at all* and 5 is *fully engaged*.
+
+### The survey was interested in whether the viewer was multitasking and what activity was done.
+
+**Here are the results:**
+
+```{r, fig.width=10}
+latest_data %>%  
+  ggplot() +
+    geom_bar(aes(y = activity,
+                fill = activity)) +
+    labs(title = "Activities done while watching YouTube",
+         subtitle = "A look at activites performed while consuming YouTube content",
+         caption = "Source: Youtube Viewing Habits Survey",
+         x = "Number of videos",
+         y = "Activity")
+
+```
+
+The grey bar (NA) shows how many videos were watched fully without multitasking.
+
+![me](https://c.tenor.com/IHHjFe68sAgAAAAd/tenor.gif)
